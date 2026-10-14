@@ -1,0 +1,174 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* App surfaces — warm paper, not flat grey */
+  --color-surface: #f7f5f0;
+  --color-paper: #fbfaf7;
+  --color-ink: #1c1a24;
+  --color-ink-soft: #5b576e;
+
+  /* Brand: violet primary, blue accent */
+  --color-brand-50: #f5f2ff;
+  --color-brand-100: #ede8ff;
+  --color-brand-200: #dcd1ff;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+
+  /* Premium navy (hero, footer) */
+  --color-navy-950: #060818;
+  --color-navy-900: #0a1029;
+  --color-navy-800: #131c42;
+  --color-navy-700: #1e2a5a;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+
+/* Visible keyboard focus for every interactive element. */
+:focus-visible {
+  outline: 2px solid var(--color-brand-600);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Subtle blueprint grid used on the dark hero — gives the layout a
+   workspace feel instead of a flat colour block. */
+.bg-blueprint {
+  background-image:
+    linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+  background-size: 44px 44px;
+}
+
+/* Fine dot texture for light sections. */
+.bg-dots {
+  background-image: radial-gradient(rgb(28 26 36 / 0.07) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Fake document lines inside the hero workspace mock. */
+.doc-line {
+  height: 6px;
+  border-radius: 999px;
+  background: #e4e1ec;
+}
+.doc-line-dark {
+  background: #c9c3dd;
+}
+
+/* Thin, subtle scrollbars for thumbnail grids. */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c9c3e0 transparent;
+}
+.thin-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #c9c3e0;
+  border-radius: 8px;
+}
+.thin-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Tasteful entrance animations (disabled by the reduced-motion rule below). */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.anim-fade-in {
+  animation: fade-in 0.18s ease-out both;
+}
+.anim-pop-in {
+  animation: pop-in 0.22s cubic-bezier(0.21, 1.02, 0.73, 1) both;
+}
+.anim-rise {
+  animation: rise-in 0.35s ease-out both;
+}
+
+/* Slow, subtle drift for hero ambient glows. */
+@keyframes float-slow {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(24px, -18px, 0) scale(1.08);
+  }
+}
+.anim-float-slow {
+  animation: float-slow 16s ease-in-out infinite alternate;
+}
+
+/* Gentle bob for the floating chips on the hero workspace mock. */
+@keyframes bob {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-7px);
+  }
+}
+.anim-bob {
+  animation: bob 5s ease-in-out infinite alternate;
+}
+.anim-bob-late {
+  animation: bob 6s ease-in-out -2.5s infinite alternate;
+}
+
+/* Respect users who prefer reduced motion. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
