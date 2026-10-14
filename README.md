@@ -1,15 +1,20 @@
 # PDF Toolkit Pro
 
-Professional, sellable PDF tools website with **real visual page previews**.
+Eight professional PDF tools in the browser, with **real visual page previews**.
 No backend, no database, no API keys, no AI APIs. All processing and page
-rendering happens locally via `pdf-lib` (+ `jszip` for multi-file split downloads)
-and PDF.js for true page thumbnails.
+rendering happens locally in the user's browser via `pdf-lib` (+ `jszip` for
+multi-file split downloads) and PDF.js for true page thumbnails. Files never
+leave the device.
+
+Current build: commit `92f72cf` — Merge PDFs + Images, PDF Maker, Convert to
+PDF, cross-tool handoff, and the design-first bento homepage.
 
 ## Stack
 
 - React 19 + JavaScript only, Vite 6, Tailwind CSS v4
 - `lucide-react` icons, `react-router-dom` routing
 - `pdf-lib` (PDF engine), `pdfjs-dist` (real page rendering), `jszip` (split ZIP downloads)
+- `motion` (`motion/react`) for interface animation, `mammoth` for .docx conversion (lazy-loaded, only when a Word file is converted)
 - `@fontsource-variable/inter` (self-hosted font)
 
 ## Run it
@@ -18,7 +23,7 @@ and PDF.js for true page thumbnails.
 npm install
 npm run dev      # http://localhost:5174
 npm run build    # production build → dist/
-npm test         # 32 engine tests (Node, no browser needed)
+npm test         # 53 engine tests (Node, no browser needed)
 ```
 
 ## Deploy to GitHub + Vercel
@@ -52,18 +57,22 @@ git push -u origin main
 `vercel.json` is already included so refreshing a nested URL like
 `/tools/merge` serves `index.html` instead of a 404.
 
-## Tools (all fully functional, client-side, visual page selection)
+## Tools (all fully functional, client-side)
 
-Every tool renders the actual PDF pages as thumbnails — click to select,
-zoom to inspect. No typing page numbers blind.
+PDF tools render the actual pages as thumbnails — click to select, zoom to
+inspect. No typing page numbers blind. Every generated PDF offers **Download**
+plus **Open in…** actions that hand the file straight into Merge, Split,
+Rotate, Extract or Reorder without re-uploading.
 
 | Route | What it does |
 |---|---|
-| `/tools/merge` | Merge 2+ PDFs in chosen order; per-file page preview strips |
+| `/tools/merge` | **Merge PDF & Images** — combine PDFs and JPG/PNG/WebP images in one ordered queue; every PDF page is kept, each image becomes one page at its exact queue position; image page size (A4/Letter/fit), orientation, fit mode, margins and background are adjustable |
+| `/tools/pdf-maker` | **PDF Maker** — build a PDF from images only; preview, reorder, choose page settings, and name the output file |
+| `/tools/convert` | **Convert to PDF** — images, `.txt`, `.html` and `.docx` (via mammoth) converted in-browser, keeping headings, paragraphs, lists, tables and embedded images as closely as possible; unsupported formats (`.doc`, `.xlsx`, `.pptx`, …) are refused with an honest, named error |
 | `/tools/split` | Visually select pages → individual PDFs or one combined PDF (+ ZIP) |
 | `/tools/extract` | Click pages in any order → new PDF with just those pages |
-| `/tools/rotate` | Select pages, rotate left/right 90° with live thumbnail preview |
-| `/tools/reorder` | Drag thumbnails (or arrows) to reorder → new PDF |
+| `/tools/rotate` | Select pages, rotate 90°/180°/270° with live thumbnail preview |
+| `/tools/reorder` | Select pages and move them as a block (or drag / use arrows), with undo and reset-to-original |
 | `/tools/watermark` | Live watermark preview; text, size, opacity, rotation, color, position |
 
 ## Structure
@@ -71,48 +80,58 @@ zoom to inspect. No typing page numbers blind.
 ```
 src/
   main.jsx                 # entry point
-  App.jsx                  # router + layout (tool pages lazy-loaded)
-  index.css                # Tailwind v4 theme (violet/blue on off-white)
+  App.jsx                  # router + layout (tool pages lazy-loaded, MotionConfig)
+  index.css                # Tailwind v4 theme (navy + warm paper surface, per-tool accents)
   lib/
     pdfEngine.js           # load/merge/split/extract/rotate/reorder/watermark/download
-    pdfPreview.js          # PDF.js worker setup, page rendering helpers
+    pdfPreview.js          # PDF.js worker setup, DPR-sharp page rendering helpers
     pageRanges.js          # "1, 3, 5-8" parsing + validation (kept for split range input)
+    imagePdf.js            # image → PDF pages (size/orientation/fit/margins/background)
+    fileKinds.js           # file classification + image dimension header parsers
+    docConvert.js          # .txt/.html/.docx → PDF text-layout engine (mammoth for .docx)
+    fileHandoff.js         # in-memory per-tool file handoff between tools (nothing persisted)
+    motionVariants.js      # shared Motion variants
   data/
-    tools.js               # 6 tool definitions (slug, copy, icon, how-to steps)
+    tools.js               # 8 tool definitions (slug, copy, icon, accent, how-to steps)
     faqs.js                # FAQ content
   components/
     Navbar.jsx / Hero.jsx / UploadZone.jsx / ToolCard.jsx / ToolsGrid.jsx
     HowItWorks.jsx / PrivacySection.jsx / Faq.jsx / Footer.jsx
     SectionHeading.jsx / ScrollToTop.jsx / ErrorBoundary.jsx
+    files/
+      DropZoneCard.jsx / QueueList.jsx / useFileQueue.js   # shared mixed-file queue
+      ImageSettings.jsx                                    # image page settings panel
     pdf/
-      usePdfWorkspace.js   # file → bytes + PDF.js doc + page count, with cleanup
-      usePageSelection.js   # ordered click selection
+      usePdfWorkspace.js   # file → bytes + PDF.js doc + page count, with safe teardown
+      usePageSelection.js  # ordered click selection
       PageThumbnail.jsx    # lazy-rendered real page thumbnail (select/zoom/rotate/drag)
-      PageGrid.jsx         # scrollable selectable grid + select-all controls
-      PageZoomModal.jsx    # high-res page zoom with keyboard navigation
+      PageGrid.jsx         # selectable grid (1 col on mobile) + select-all controls
+      PageZoomModal.jsx    # high-res page zoom with fit/zoom controls, pan, keyboard nav
     tools/
-      shared.jsx           # Alert, Field, buttons, FileLine, FileWarnings, usePdfFiles
-      MergeTool.jsx / SplitTool.jsx / ExtractTool.jsx
+      shared.jsx           # Alert, Field, buttons, FileWarnings, GeneratedPdfActions
+      MergeTool.jsx / PdfMakerTool.jsx / ConvertTool.jsx
+      SplitTool.jsx / ExtractTool.jsx
       RotateTool.jsx / ReorderTool.jsx / WatermarkTool.jsx
   pages/
-    Home.jsx               # landing page composition
+    Home.jsx               # landing page (split hero + 8-tool bento grid)
     ToolPage.jsx           # per-tool workspace page (/tools/:slug)
     NotFound.jsx
 ```
 
-## Verified 2026-10-11
+## Verified 2026-10-12 (commit `92f72cf`)
 
-- `npm run build` clean. Tool pages (pdf-lib + pdf.js + jszip) lazy-load, so the
-  landing page ships ~296 KB raw / 93 KB gzip; the tool chunk (~1 MB raw /
-  369 KB gzip) loads only when a tool is opened.
-- `npm test` — 35/35 Node engine tests green (all 6 tools on generated PDFs,
-  incl. per-page rotation maps and watermark colors).
-- Headless-Chromium visual E2E — 21/21 checks green: real PDF.js thumbnails with
-  document content, click-to-select (aria-pressed), zoom modal, extract (2 pages
-  in click order), rotate (only page 2 at 90° in the downloaded PDF), reorder
-  (visual order + download), watermark (live preview + valid download), split
-  ZIP (2 correct PDFs), merge (preview strips + 5-page PDF), mobile layout,
-  zero JS errors.
+- `npm test` — **53/53** Node tests green, re-run 2026-10-12: all original tools
+  plus mixed PDF+image merge order byte-verified, image page sizing, corrupt
+  image rejection, file classification, .txt conversion and honest .pptx refusal.
+- `npm run build` — clean production build (re-run 2026-10-12). Tool pages
+  lazy-load; the mammoth chunk (~305 KB) loads only for .docx conversion.
+- Browser E2E for this build — `verify-upgrade2` **20/20** and updated
+  `verify-design` **20/20**: mixed-queue merge order in the downloaded PDF,
+  PDF Maker orientation by image aspect, .txt + .docx conversion with output
+  text verified, .xlsx refusal, Merge → Split handoff, mobile 375px with no
+  horizontal overflow and 44px touch targets, zero JS errors.
+- Mobile was verified in Chromium emulation only — no physical phone was
+  available. Nothing in this section claims on-device testing.
 
 ## Limitations (stated honestly in the UI too)
 
@@ -120,5 +139,11 @@ src/
   warning, and very large PDFs may be slow or fail on low-RAM devices. No
   fixed limit is claimed.
 - Password-protected PDFs must be unlocked first (pdf-lib cannot open them).
+- .docx conversion is content-faithful, not pixel-faithful: complex Word
+  layout (columns, text boxes, exact fonts) is simplified.
+- .html conversion only embeds images that are embedded in the file itself
+  (data URIs); linked images are counted and reported as skipped.
+- WebP images are decoded via the browser Canvas; a browser that cannot
+  decode WebP there will ask for JPG/PNG instead.
 - Watermark placement assumes unrotated page geometry; pages with a
   pre-existing rotation may position the watermark oddly.
