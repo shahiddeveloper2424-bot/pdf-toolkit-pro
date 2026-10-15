@@ -248,7 +248,7 @@ export default function Hero() {
                   onClick={scrollToTools}
                   className="text-sm font-semibold text-white/70 hover:text-white transition-colors"
                 >
-                  or explore all six tools ↓
+                  or explore all eight tools ↓
                 </button>
               </div>
             </div>

@@ -5,7 +5,7 @@ const steps = [
     icon: MousePointerClick,
     num: '01',
     title: 'Choose a tool & upload',
-    text: 'Pick one of the six tools and drop in your PDF. It opens right in your browser — nothing is uploaded anywhere.',
+    text: 'Pick one of the eight tools and drop in your PDF. It opens right in your browser — nothing is uploaded anywhere.',
   },
   {
     icon: Layers,
