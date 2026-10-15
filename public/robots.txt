@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/sitemap.xml
