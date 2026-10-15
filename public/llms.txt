@@ -1,0 +1,22 @@
+# PDF Toolkit Pro
+
+> 8 free PDF tools that run entirely in your browser. Private, no sign-up, no uploads — files never leave the device.
+
+## Tools
+
+- [Merge PDFs & Images](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/merge): Combine PDFs and images (JPG, PNG, WebP) into one PDF with visual page previews, reorder, and duplicate detection.
+- [PDF Maker](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/pdf-maker): Create a PDF from images with page size, margin, and layout options.
+- [Convert to PDF](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/convert): Convert text, HTML, and Word (.docx) files to PDF.
+- [Split PDF](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/split): Split a PDF into separate files by selecting pages visually.
+- [Extract Pages](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/extract): Extract selected pages into a new PDF.
+- [Rotate PDF](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/rotate): Rotate pages 90/180/270 degrees with live previews.
+- [Reorder Pages](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/reorder): Drag to reorder PDF pages visually.
+- [Watermark PDF](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/tools/watermark): Add text watermarks with position, opacity, and style controls.
+
+## How it works
+
+All processing happens locally in the browser using pdf-lib and PDF.js. No backend, no database, no API keys, no uploads.
+
+## Site
+
+- [Home](https://pdf-toolkit-pro-shahiddeveloper2424-1108.vercel.app/): All Your PDF Tools in One Place
