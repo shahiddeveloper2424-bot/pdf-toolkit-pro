@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { ArrowLeft } from 'lucide-react';
 import { getTool, tools } from '../data/tools.js';
 import ErrorBoundary from '../components/ErrorBoundary.jsx';
+import ToolSeo from '../components/ToolSeo.jsx';
 import MergeTool from '../components/tools/MergeTool.jsx';
 import SplitTool from '../components/tools/SplitTool.jsx';
 import ExtractTool from '../components/tools/ExtractTool.jsx';
@@ -99,6 +100,8 @@ export default function ToolPage() {
         <ErrorBoundary key={slug}>
           <ToolComponent />
         </ErrorBoundary>
+
+        <ToolSeo tool={tool} />
 
         <div className="mt-14 pt-8 border-t border-zinc-200">
           <h2 className="text-xs font-bold text-ink uppercase tracking-[0.18em] mb-4">
