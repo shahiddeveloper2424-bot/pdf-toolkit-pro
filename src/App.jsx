@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react';
 import Navbar from './components/Navbar.jsx';
 import Footer from './components/Footer.jsx';
 import ScrollToTop from './components/ScrollToTop.jsx';
+import SeoHead from './components/SeoHead.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import Home from './pages/Home.jsx';
 import NotFound from './pages/NotFound.jsx';
@@ -33,6 +34,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <div className="min-h-screen flex flex-col bg-surface">
         <ScrollToTop />
+        <SeoHead />
         <Navbar />
         <div className="flex-1">
           <ErrorBoundary>
